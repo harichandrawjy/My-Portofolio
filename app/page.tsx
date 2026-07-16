@@ -13,11 +13,13 @@ import { HalftonePortrait } from "./components/HalftonePortrait";
 import { WireframeArc } from "./components/WireframeArc";
 import { LuminousDiscs } from "./components/LuminousDiscs";
 import { ParticleSphere } from "./components/ParticleSphere";
+import { MobileNav } from "./components/MobileNav";
 
 export default function Home() {
   return (
     <main className="relative">
       <Nav />
+      <MobileNav email={profile.email} />
       <Hero />
       <Index />
       <About />
@@ -44,7 +46,7 @@ function Nav() {
         </nav>
         <a
           href={`mailto:${profile.email}`}
-          className="mono text-[10px] uppercase tracking-[0.2em] text-fg-dim transition-colors hover:text-fg md:text-xs"
+          className="mono hidden text-[10px] uppercase tracking-[0.2em] text-fg-dim transition-colors hover:text-fg md:block md:text-xs"
         >
           {profile.email}
         </a>
