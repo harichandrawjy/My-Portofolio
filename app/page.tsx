@@ -86,7 +86,7 @@ function Hero() {
       <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-end px-6 pb-16 md:px-10 md:pb-24">
         <div className="mono mb-10 flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-fg-dim">
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          <span>Available for internships · 2026</span>
+          <span>Informatics Eng. · Feng Chia University · Class of 2027</span>
         </div>
 
         <HeroTitle />
