@@ -3,8 +3,8 @@ import type { Project } from "../../data/projects";
 import { riskFree } from "../../lib/frontier";
 import { assetPoints, frontier } from "../../lib/frontier-data";
 import wastewiseShot from "../../public/work/wastewise-setup.webp";
-import { DataModelFigure } from "./figures/DataModelFigure";
 import { FrontierFigure } from "./figures/FrontierFigure";
+import { PhoneScreens } from "./figures/PhoneScreens";
 import { TamperFigure } from "./figures/TamperFigure";
 
 /**
@@ -37,15 +37,7 @@ export function ProjectVisual({ project, preview = false }: { project: Project; 
           />
         </div>
       );
-    case "data-model":
-      return preview ? (
-        <div className="flex size-full items-center justify-center p-4 sm:p-6">
-          <div className="w-full max-w-md">
-            <DataModelFigure />
-          </div>
-        </div>
-      ) : (
-        <DataModelFigure />
-      );
+    case "phones":
+      return <PhoneScreens preview={preview} />;
   }
 }

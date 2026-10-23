@@ -32,56 +32,80 @@ function ToolIcon({ icon, fallback, tone }: { icon?: string; fallback?: keyof ty
 }
 
 export function Toolkit() {
-  const [active, setActive] = useState<ToolCategory | "all">("all");
+  // Hover previews a category; a click pins it until it is clicked again.
+  const [preview, setPreview] = useState<ToolCategory | null>(null);
+  const [pinned, setPinned] = useState<ToolCategory | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const active: ToolCategory | "all" = preview ?? pinned ?? "all";
   const count = (id: ToolCategory) => tools.filter((t) => t.category === id).length;
 
   return (
     <div
       className="mt-14 grid gap-5 lg:grid-cols-12"
       onMouseLeave={() => {
-        setActive("all");
+        setPreview(null);
         setHovered(null);
       }}
       onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setActive("all");
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPreview(null);
       }}
     >
-      <div className="rounded-3xl border border-rule bg-card p-3 shadow-card lg:col-span-4 lg:self-start">
-        <p className="label-mono px-4 pb-2 pt-3 text-muted">Hover a category</p>
-        <ul className="space-y-1">
-          {[{ id: "all" as const, label: "Everything", note: "Every tool I’ve used on a real project or in coursework." }, ...toolCategories].map(
-            (c, i) => {
-              const selected = active === c.id;
-              return (
-                <li key={c.id}>
-                  <button
-                    type="button"
-                    onMouseEnter={() => setActive(c.id)}
-                    onFocus={() => setActive(c.id)}
-                    onClick={() => setActive(c.id)}
-                    aria-pressed={selected}
-                    className={`w-full rounded-2xl px-4 py-4 text-left transition-colors ${
-                      selected ? "bg-brand text-white" : "hover:bg-surface"
+      <div className="overflow-hidden rounded-3xl border border-rule bg-card shadow-card lg:col-span-4 lg:self-start">
+        <div className="flex items-start justify-between gap-4 border-b border-rule px-6 py-5">
+          <div>
+            <p className="label-mono text-accent">Filter by category</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Hover to preview. Click to keep a category selected.
+            </p>
+          </div>
+          {pinned && (
+            <button
+              type="button"
+              onClick={() => setPinned(null)}
+              className="label-mono shrink-0 rounded-full border border-rule-strong px-3 py-1.5 text-ink-2 transition-colors hover:border-lime hover:bg-lime hover:text-on-lime"
+            >
+              Show all
+            </button>
+          )}
+        </div>
+        <ul className="divide-y divide-rule">
+          {toolCategories.map((c, i) => {
+            const isActive = active === c.id;
+            const isPinned = pinned === c.id;
+            return (
+              <li key={c.id}>
+                <button
+                  type="button"
+                  onMouseEnter={() => setPreview(c.id)}
+                  onFocus={() => setPreview(c.id)}
+                  onClick={() => setPinned(isPinned ? null : c.id)}
+                  aria-pressed={isPinned}
+                  className={`relative grid w-full grid-cols-[2.25rem_1fr_auto] gap-x-2 px-6 py-5 text-left transition-colors ${
+                    isActive ? "bg-accent-soft" : "hover:bg-surface"
+                  }`}
+                >
+                  <span
+                    aria-hidden
+                    className={`absolute inset-y-0 left-0 w-1 bg-lime transition-opacity ${isActive ? "opacity-100" : "opacity-0"}`}
+                  />
+                  <span className="label-mono pt-1.5 text-muted">{String(i + 1).padStart(3, "0")}</span>
+                  <span>
+                    <span className={`display block text-2xl transition-colors ${isActive ? "text-accent" : ""}`}>
+                      {c.label}
+                    </span>
+                    <span className="mt-2 block text-[0.9375rem] leading-relaxed text-ink-2">{c.note}</span>
+                  </span>
+                  <span
+                    className={`label-mono flex size-9 items-center justify-center rounded-full border tabular-nums transition-colors ${
+                      isActive ? "border-brand bg-brand text-white" : "border-rule-strong text-muted"
                     }`}
                   >
-                    <span className="flex items-baseline justify-between gap-3">
-                      <span className="flex items-baseline gap-3">
-                        <span className={`label-mono ${selected ? "text-lime" : "text-muted"}`}>
-                          {String(i).padStart(2, "0")}
-                        </span>
-                        <span className="display text-xl">{c.label}</span>
-                      </span>
-                      <span className={`label-mono ${selected ? "text-white/80" : "text-muted"}`}>
-                        {c.id === "all" ? tools.length : count(c.id)}
-                      </span>
-                    </span>
-                    {selected && <span className="mt-2 block text-sm leading-relaxed text-white/85">{c.note}</span>}
-                  </button>
-                </li>
-              );
-            },
-          )}
+                    {String(count(c.id)).padStart(2, "0")}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
@@ -101,7 +125,7 @@ export function Toolkit() {
             <li
               key={tool.name}
               onMouseEnter={() => {
-                setActive(tool.category);
+                setPreview(tool.category);
                 setHovered(tool.name);
               }}
               onMouseLeave={() => setHovered(null)}

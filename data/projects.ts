@@ -1,4 +1,4 @@
-export type ProjectVisual = "frontier" | "tamper" | "screenshot" | "data-model";
+export type ProjectVisual = "frontier" | "tamper" | "screenshot" | "phones";
 
 export type Project = {
   slug: string;
@@ -91,6 +91,6 @@ export const projects: Project[] = [
     ],
     stack: ["Java", "Kotlin", "Android", "Firebase", "Firestore", "OpenAI", "Google Places"],
     source: "https://github.com/harichandrawjy/Finance-Buddy",
-    visual: "data-model",
+    visual: "phones",
   },
 ];

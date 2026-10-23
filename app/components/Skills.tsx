@@ -9,7 +9,6 @@ export function Skills() {
           id="skills-title"
           eyebrow="Toolkit"
           lines={["The tools", <span key="hl" className="highlight">I reach for.</span>]}
-          aside="Hover a category or a tool to see where it fits. The notes say where I used it."
         />
         <Toolkit />
       </div>
