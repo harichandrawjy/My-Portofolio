@@ -1,27 +1,33 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 
-const format = () =>
-  new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZone: "Asia/Taipei",
-    hour12: false,
-  }).format(new Date());
+const format = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Asia/Taipei",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
 
-function subscribe(cb: () => void) {
-  const id = setInterval(cb, 1000);
-  return () => clearInterval(id);
-}
-
+/** Local time in Taichung. Renders nothing on the server so the markup never mismatches. */
 export function LiveClock() {
-  const time = useSyncExternalStore(
-    subscribe,
-    () => format(),
-    () => "--:--:--"
-  );
+  const [now, setNow] = useState<string | null>(null);
 
-  return <span className="mono tabular-nums">{time}</span>;
+  useEffect(() => {
+    const tick = () => setNow(format.format(new Date()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  if (!now) return null;
+  return (
+    <>
+      <span aria-hidden className="opacity-50">
+        {"//"}
+      </span>
+      <time className="tabular-nums">{now} Taichung</time>
+    </>
+  );
 }

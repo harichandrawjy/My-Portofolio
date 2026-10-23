@@ -1,88 +1,249 @@
 @import "tailwindcss";
 
+/* Light is the default; dark applies from the OS setting unless the visitor picked a theme. */
 :root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --surface: #f4f5f7;
+  --card: #ffffff;
+  --ink: #0e1116;
+  --ink-2: #3b424d;
+  --muted: #5f6774;
+  --rule: #e2e5e9;
+  --rule-strong: #c8cdd5;
+  --accent: #2443d6;
+  --accent-hover: #1a33b0;
+  --on-accent: #ffffff;
+  --accent-soft: rgb(36 67 214 / 0.1);
+  --flag: #d42f2f;
+  --watermark: rgb(14 17 22 / 0.045);
+  --shadow: 0 1px 2px rgb(14 17 22 / 0.04), 0 12px 32px -12px rgb(14 17 22 / 0.12);
+
+  /* Brand blocks stay the same in both themes. */
+  --brand: #2443d6;
+  --lime: #d4ff3a;
+  --on-lime: #0b0d11;
+}
+
+:root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #0a0a0a;
-  --bg-elev: #111111;
-  --fg: #e8e4dc;
-  --fg-dim: #8a857c;
-  --rule: #232323;
-  --accent: #d64a2c;
-  --accent-soft: rgba(214, 74, 44, 0.14);
+  --bg: #0b0d11;
+  --surface: #12151b;
+  --card: #14171e;
+  --ink: #eef0f3;
+  --ink-2: #c4c9d1;
+  --muted: #8f97a4;
+  --rule: #23272f;
+  --rule-strong: #363b46;
+  --accent: #8fa1ff;
+  --accent-hover: #b3beff;
+  --on-accent: #0b0d11;
+  --accent-soft: rgb(143 161 255 / 0.14);
+  --flag: #ff6b6b;
+  --watermark: rgb(238 240 243 / 0.04);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #0b0d11;
+    --surface: #12151b;
+    --card: #14171e;
+    --ink: #eef0f3;
+    --ink-2: #c4c9d1;
+    --muted: #8f97a4;
+    --rule: #23272f;
+    --rule-strong: #363b46;
+    --accent: #8fa1ff;
+    --accent-hover: #b3beff;
+    --on-accent: #0b0d11;
+    --accent-soft: rgb(143 161 255 / 0.14);
+    --flag: #ff6b6b;
+    --watermark: rgb(238 240 243 / 0.04);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
+  }
 }
 
 @theme inline {
   --color-bg: var(--bg);
-  --color-bg-elev: var(--bg-elev);
-  --color-fg: var(--fg);
-  --color-fg-dim: var(--fg-dim);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
   --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: var(--on-accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-flag: var(--flag);
+  --color-brand: var(--brand);
+  --color-lime: var(--lime);
+  --color-on-lime: var(--on-lime);
+  --color-watermark: var(--watermark);
+  --shadow-card: var(--shadow);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
-html,
+/* Archivo is variable on width as well as weight. */
+@utility font-wide {
+  font-variation-settings: "wdth" 118;
+}
+
+@utility font-semiwide {
+  font-variation-settings: "wdth" 108;
+}
+
+/* Heavy uppercase display type for section and hero headlines. */
+@utility display {
+  font-variation-settings: "wdth" 112;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+}
+
+/* Hollow letters. Set --stroke to change the outline color (defaults to ink). */
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 0.035em var(--stroke, var(--ink));
+}
+
+/* Small monospace labels used for eyebrows, meta and nav. */
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* A lime highlighter band behind part of a headline. It wraps line by line and sweeps in when revealed. */
+@utility highlight {
+  color: var(--on-lime);
+  background-image: linear-gradient(var(--lime), var(--lime));
+  background-repeat: no-repeat;
+  background-position: 0 85%;
+  background-size: 100% 88%;
+  padding-inline: 0.1em;
+  margin-inline: -0.1em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
 body {
   background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--ink);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-html,
-body {
-  overflow-x: clip;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 55;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(214, 74, 44, 0.05) 0%, transparent 45%),
-    radial-gradient(120% 90% at 50% 100%, rgba(50, 60, 90, 0.05) 0%, transparent 50%),
-    radial-gradient(80% 60% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.5) 100%);
-  mix-blend-mode: normal;
-}
-
 ::selection {
-  background: var(--accent);
-  color: #0a0a0a;
+  background: var(--lime);
+  color: var(--on-lime);
 }
 
-.grain::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 60;
-  opacity: 0.06;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9'/></svg>");
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
-.hairline {
-  background: linear-gradient(to right, transparent, var(--rule) 20%, var(--rule) 80%, transparent);
-  height: 1px;
+/* On the cobalt brand blocks the accent would vanish, so switch to lime. */
+.bg-brand :focus-visible {
+  outline-color: var(--lime);
 }
 
-.mono {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-feature-settings: "tnum" on, "cv11" on;
+/* Theme-dependent icons render both and let CSS pick, so markup never differs between server and client. */
+.icon-for-dark {
+  display: none;
+}
+:root[data-theme="dark"] .icon-for-light {
+  display: none;
+}
+:root[data-theme="dark"] .icon-for-dark {
+  display: block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .icon-for-light {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .icon-for-dark {
+    display: block;
+  }
+}
+
+/* Hero entrance and scroll reveals. Hidden states apply only when JavaScript runs and motion is welcome. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    translate: -50px 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .enter {
+    animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--enter-delay, 0s);
+  }
+
+  .js .enter-slide {
+    animation: slide-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--enter-delay, 0s);
+  }
+
+  /* Hero depth: HeroParallax sets --px and --py (-0.5 to 0.5) from the pointer; each layer scales them by its depth. */
+  .parallax {
+    translate: calc(var(--px, 0) * var(--depth-x, 0px)) calc(var(--py, 0) * var(--depth-y, 0px));
+    transition: translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .js [data-reveal] {
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+      translate 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+  }
+
+  .js [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    translate: 0 24px;
+  }
+
+  .js [data-reveal]:not([data-revealed]) .highlight {
+    background-size: 0% 88%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
   }
 }

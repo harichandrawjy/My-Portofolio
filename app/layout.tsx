@@ -1,31 +1,76 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, JetBrains_Mono } from "next/font/google";
+import { profile } from "../data/profile";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivo = Archivo({
+  variable: "--font-archivo",
+  subsets: ["latin"],
+  axes: ["wdth"],
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
+const description =
+  "Hari Chandra Wijaya is a computer science student at Feng Chia University in Taiwan who builds full-stack software around a numerical core: a Markowitz portfolio optimizer, an invisible-watermarking pipeline and more.";
 
 export const metadata: Metadata = {
-  title: "Hari Chandra Wijaya · Full-stack developer",
-  description:
-    "Portfolio of Hari Chandra Wijaya. Full-stack developer, CS student at Feng Chia University, building web, Android, and AI-powered tools.",
+  metadataBase: new URL(profile.siteUrl),
+  title: `${profile.name} · ${profile.role}`,
+  description,
+  authors: [{ name: profile.name, url: profile.siteUrl }],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: profile.name,
+    title: `${profile.name} · ${profile.role}`,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${profile.name} · ${profile.role}`,
+    description,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2443d6",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="grain min-h-[100dvh] bg-bg text-fg">{children}</body>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${archivo.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Applies a saved theme before paint, and lets CSS hide not-yet-revealed content only when JavaScript can reveal it. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.dataset.theme=t}catch(e){}})()",
+          }}
+        />
+      </head>
+      <body className="min-h-dvh bg-bg text-ink">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-bg"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }
